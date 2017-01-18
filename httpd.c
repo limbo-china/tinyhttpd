@@ -54,7 +54,7 @@ void unimplemented(int);
 /**********************************************************************/
 void accept_request(void *arg)
 {
-    int client = (intptr_t)arg;
+    int client = *(int *)(intptr_t)arg;
     char buf[1024];
     size_t numchars;
     char method[255];
@@ -65,7 +65,7 @@ void accept_request(void *arg)
     int cgi = 0;      /* becomes true if server decides this is a CGI
                        * program */
     char *query_string = NULL;
-
+	
     numchars = get_line(client, buf, sizeof(buf));
 
     i = 0; j = 0;
@@ -95,6 +95,8 @@ void accept_request(void *arg)
         i++; j++;
     }
     url[i] = '\0';
+	
+	printf("method:%s\nurl:%s\n",method,url);
 
     if (strcasecmp(method, "GET") == 0)
     {
@@ -125,8 +127,9 @@ void accept_request(void *arg)
                 (st.st_mode & S_IXGRP) ||
                 (st.st_mode & S_IXOTH)    )
             cgi = 1;
-        if (!cgi)
+        if (!cgi){
             serve_file(client, path);
+		}
         else
             execute_cgi(client, path, method, query_string);
     }
@@ -321,7 +324,7 @@ int get_line(int sock, char *buf, int size)
     while ((i < size - 1) && (c != '\n'))
     {
         n = recv(sock, &c, 1, 0);
-        /* DEBUG printf("%02X\n", c); */
+        //debug printf("%02X\n", c); 
         if (n > 0)
         {
             if (c == '\r')
@@ -340,8 +343,6 @@ int get_line(int sock, char *buf, int size)
             c = '\n';
     }
     buf[i] = '\0';
-
-    printf("getline: %s\n", buf);
 
     return(i);
 }
@@ -492,14 +493,14 @@ void unimplemented(int client)
 int main(void)
 {
     int server_sock = -1;
-    u_short port = 9734;
+    u_short port = 8080;
     int client_sock = -1;
     struct sockaddr_in client_name;
     socklen_t  client_name_len = sizeof(client_name);
     pthread_t newthread;
 
     server_sock = startup(&port);
-    printf("httpd running on port %d\n", port);
+    printf("httpd running on port %d\n",port);
 
     while (1)
     {
