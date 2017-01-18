@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     int len;
     struct sockaddr_in address;
     int result;
-    char ch = 'A';
+    char *request = "GET /index.html\n";
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     address.sin_family = AF_INET;
@@ -25,9 +25,11 @@ int main(int argc, char *argv[])
         perror("oops: client1");
         exit(1);
     }
-    write(sockfd, &ch, 1);
-    read(sockfd, &ch, 1);
-    printf("char from server = %c\n", ch);
+
+    char result[1024];
+    send(sockfd, request, strlen(request));
+    recv(sockfd, result, sizeof(result));
+    printf("result from server: \n %s", result);
     close(sockfd);
     exit(0);
 }
