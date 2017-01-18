@@ -70,7 +70,7 @@ void accept_request(void *arg)
     i = 0; j = 0;
     while (!ISspace(buf[i]) && (i < sizeof(method) - 1))
     {
-        method[i] = buf[i];
+        method[i] =  buf[i];
         i++;
     }
     j=i;
@@ -489,7 +489,7 @@ void unimplemented(int client)
 int main(void)
 {
     int server_sock = -1;
-    u_short port = 4000;
+    u_short port = 9734;
     int client_sock = -1;
     struct sockaddr_in client_name;
     socklen_t  client_name_len = sizeof(client_name);
