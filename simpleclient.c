@@ -26,10 +26,10 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    char result[1024];
-    send(sockfd, request, strlen(request));
-    recv(sockfd, result, sizeof(result));
-    printf("result from server: \n %s", result);
+    char resbuf[1024];
+    send(sockfd, request, strlen(request),0);
+    recv(sockfd, resbuf, sizeof(resbuf),0);
+    printf("result from server: \n %s", resbuf);
     close(sockfd);
     exit(0);
 }
